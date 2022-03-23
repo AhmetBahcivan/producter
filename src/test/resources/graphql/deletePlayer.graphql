@@ -1,0 +1,4 @@
+
+mutation DeletePlayer($name: String!, $surname: String!){
+    deletePlayer(name: $name, surname: $surname)
+}

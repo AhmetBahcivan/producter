@@ -1,0 +1,11 @@
+
+mutation AddPlayer($name: String!, $surname: String!, $position: Position!, $teamName: String!){
+    addPlayer(name: $name, surname: $surname, position: $position, teamName: $teamName) {
+        name
+        surname
+        position
+        team {
+            name
+        }
+    }
+}
