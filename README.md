@@ -29,6 +29,7 @@ Required to set up Postgres credentials and db name in application.properties
 
 
 GraphQL Schema Visualizer: http://localhost:8082/voyager
+	
 GraphiQL endpoint, where you can test different queries: http://localhost:8082/apis/graphiql
 	
 		
