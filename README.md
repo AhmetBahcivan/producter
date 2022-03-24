@@ -8,6 +8,8 @@ Complete stack:
 <li>GraphQL</li>
 <li>Postgres</li>
 
+Required to set up Postgres credentials and db name in application.properties
+
 <h2>Install</h2>
 
 <div class="snippet-clipboard-content position-relative overflow-auto"><pre><code>mvn clean package 
