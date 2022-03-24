@@ -9,7 +9,6 @@ import javax.validation.constraints.Size;
 @Setter
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @ToString
 public class Player {
@@ -23,7 +22,7 @@ public class Player {
 
      */
     @Id
-    @Column(name="id", nullable = false)
+    @Column(name="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

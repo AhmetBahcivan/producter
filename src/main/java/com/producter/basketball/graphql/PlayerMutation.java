@@ -5,9 +5,9 @@ import com.producter.basketball.entity.Player;
 import com.producter.basketball.entity.Position;
 import com.producter.basketball.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
-
 import javax.validation.Valid;
 
 @Component

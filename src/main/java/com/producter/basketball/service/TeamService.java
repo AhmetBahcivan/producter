@@ -6,6 +6,7 @@ import com.producter.basketball.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.Optional;
 
 @Service
@@ -23,7 +24,12 @@ public class TeamService {
         Team team = new Team();
         team.setName(name);
 
-        teamRepository.save(team);
+        try {
+            teamRepository.save(team);
+        }catch (ConstraintViolationException ce) {
+            String message = ce.getMessage().substring(ce.getMessage().indexOf("interpolatedMessage="),ce.getMessage().indexOf(", messageTemplate"));
+            throw new ConstraintViolationExceptionHandler(message);
+        }
         return team;
     }
 

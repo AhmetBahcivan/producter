@@ -1,18 +1,17 @@
 package com.producter.basketball.service;
 
-import com.producter.basketball.exception.PlayerAlreadyExistsException;
-import com.producter.basketball.exception.PlayerCountLimitException;
-import com.producter.basketball.exception.PlayerNotFoundException;
-import com.producter.basketball.exception.TeamNotFoundException;
+import com.producter.basketball.exception.*;
 import com.producter.basketball.entity.Player;
 import com.producter.basketball.entity.Position;
 import com.producter.basketball.entity.Team;
 import com.producter.basketball.repository.PlayerRepository;
 import com.producter.basketball.repository.TeamRepository;
+import graphql.GraphQLException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,12 +36,10 @@ public class PlayerService {
     }
 
     public Iterable<Player> findAllPlayers() {
-        System.out.println("findAllPlayers is working");
         return playerRepository.findAll();
     }
 
     public Player addPlayer(String name, String surname, Position position, String teamName) {
-        log.info("addPlaayer function is working");
         Optional<Team> teamOptional = teamRepository.findTeamByName(teamName);
         if(teamOptional.isEmpty()){
             //TODO return no team is found -> something meaningfull
@@ -51,6 +48,7 @@ public class PlayerService {
 
         if(playerExists(name, surname)) {
             //TODO user already exist
+            //throw new GraphQLException("A user already exists with this name and surname, please try another one");
             throw new PlayerAlreadyExistsException("A user already exists with this name and surname, please try another one", "name", "surname");
         }
 
@@ -65,7 +63,12 @@ public class PlayerService {
         player.setSurname(surname);
         player.setPosition(position);
         player.setTeam(teamOptional.get());
-        playerRepository.save(player);
+        try {
+            playerRepository.save(player);
+        }catch (ConstraintViolationException ce) {
+            String message = ce.getMessage().substring(ce.getMessage().indexOf("interpolatedMessage="),ce.getMessage().indexOf(", messageTemplate"));
+            throw new ConstraintViolationExceptionHandler(message);
+        }
 
         return player;
     }
@@ -74,10 +77,14 @@ public class PlayerService {
 
         Optional<Player> playerOptional = playerRepository.findFirstByNameAndSurname(name, surname);
         if(playerOptional.isEmpty()) {
-            System.out.println("deletePlayer error");
             throw new PlayerNotFoundException("Player with name: " + name + " surname: " + surname + " is not found! ", "id");
         }
-        playerRepository.delete(playerOptional.get());
+        try {
+            playerRepository.delete(playerOptional.get());
+        }catch (ConstraintViolationException ce) {
+            String message = ce.getMessage().substring(ce.getMessage().indexOf("interpolatedMessage="),ce.getMessage().indexOf(", messageTemplate"));
+            throw new ConstraintViolationExceptionHandler(message);
+        }
         return true;
 
     }
