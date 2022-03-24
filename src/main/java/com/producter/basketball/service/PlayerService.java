@@ -41,20 +41,18 @@ public class PlayerService {
 
     public Player addPlayer(String name, String surname, Position position, String teamName) {
         Optional<Team> teamOptional = teamRepository.findTeamByName(teamName);
+
         if(teamOptional.isEmpty()){
-            //TODO return no team is found -> something meaningfull
             throw new TeamNotFoundException("We were unable to find a team with the provided name:" + teamName, "name");
         }
 
         if(playerExists(name, surname)) {
-            //TODO user already exist
             //throw new GraphQLException("A user already exists with this name and surname, please try another one");
             throw new PlayerAlreadyExistsException("A user already exists with this name and surname, please try another one", "name", "surname");
         }
 
         long currentPlayerCount = playerRepository.countPlayerByTeam_Name(teamName);
         if(currentPlayerCount>=teamPlayerlimit) {
-            //TODO return out of count -> something meaningfull
             throw new PlayerCountLimitException("Team is already full: " + teamPlayerlimit, teamPlayerlimit);
         }
 
